@@ -1,0 +1,3 @@
+rootProject.name = 'Baratto'
+include ':authentication'
+include 'MainTester'
