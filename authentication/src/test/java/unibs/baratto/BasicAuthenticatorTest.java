@@ -2,14 +2,15 @@ package unibs.baratto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import unibs.baratto.authentication.FirstAuthenticator;
 
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AuthenticationHandlerTest {
+class BasicAuthenticatorTest {
 
-    AuthenticationHandler handler = new AuthenticationHandler(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\test\\resources\\credentials.test"));
+    FirstAuthenticator handler = new FirstAuthenticator(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\test\\resources\\credentials.test"));
 
     @Test
     @DisplayName("Should read config file")
@@ -20,22 +21,22 @@ class AuthenticationHandlerTest {
     @Test
     @DisplayName("Should return true When credentials are valid")
     void validCredentialsTest(){
-        assertTrue(handler.isValid("tester", "tester"));
+        assertTrue(handler.requestAccess("tester", "tester").isPassed());
     }
 
     @Test
     @DisplayName("Should return false When credentials are not valid")
     void notValidCredentialsTest(){
-        assertFalse(handler.isValid("beta", "tester"));
-        assertFalse(handler.isValid("tester", "teste"));
+        assertFalse(handler.requestAccess("beta", "tester").isPassed());
+        assertFalse(handler.requestAccess("tester", "teste").isPassed());
     }
 
     @Test
     @DisplayName("Should work When new credentials added")
     void credentialsAdditionTest(){
         handler.addNewCredential("ciao", "ciao");
-        assertTrue(handler.isValid("ciao", "ciao"));
-        assertFalse(handler.isValid("ciao", "tester"));
+        assertTrue(handler.requestAccess("ciao", "ciao").isPassed());
+        assertFalse(handler.requestAccess("ciao", "tester").isPassed());
         handler.removeCredential("ciao");
     }
 

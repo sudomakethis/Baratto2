@@ -1,4 +1,4 @@
-package unibs.baratto.authentication;
+package unibs.baratto.users;
 
 public class Configurator extends User{
 

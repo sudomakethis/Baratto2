@@ -1,4 +1,4 @@
-package unibs.baratto;
+package unibs.baratto.authentication;
 
 import java.io.BufferedReader;
 import java.io.Reader;

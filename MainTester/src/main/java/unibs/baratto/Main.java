@@ -1,8 +1,11 @@
 package unibs.baratto;
 
+import unibs.baratto.authentication.AuthenticationHandler;
+import unibs.baratto.authentication.AuthenticationResult;
+import unibs.baratto.authentication.BasicAuthenticator;
+import unibs.baratto.authentication.FirstAuthenticator;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -14,25 +17,21 @@ public class Main {
     }
 
     private static void login() {
-        AuthenticationHandler defaultAuthenticator = new AuthenticationHandler(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\main\\resources\\credentials"));
-        AuthenticationHandler authenticator = new AuthenticationHandler(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\main\\resources\\credentials"));
+        AuthenticationHandler configsAuthenticator = new BasicAuthenticator(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\main\\resources\\credentials"));
+        AuthenticationHandler defaultAuthenticator = new FirstAuthenticator(new File("D:\\Enrico\\InellijWorkspace\\Baratto\\authentication\\src\\main\\resources\\credentials"));
 
-        List<AuthenticationHandler> authenticationHandlersChain = new ArrayList<>();
-        authenticationHandlersChain.add(defaultAuthenticator);
-        authenticationHandlersChain.add(authenticator);
+        configsAuthenticator.setNextHandler(defaultAuthenticator);
 
         System.out.print("Inserisci nome utente: ");
         var nome = in.next();
         System.out.print("Inserisci password: ");
         var pass = in.next();
 
-        for (AuthenticationHandler handler : authenticationHandlersChain)
-            if (handler.isValid(nome, pass)) {
-                System.out.println("Benvenuto " + handler.getUser().getUsername());
-                return;
-            }
-            else
-                System.out.println("accesso non eseguito:\n" + handler.getStatus());
+        AuthenticationResult result = configsAuthenticator.requestAccess(nome, pass);
+        if (result.isPassed())
+            System.out.println(result.getUser().getUsername());
+        else
+            System.out.println("Error");
 
     }
 }
